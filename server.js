@@ -21,6 +21,10 @@ var app = express()
 
 // Use a fallback for non-root routes (required for Vue router)
 //   NOTE: History fallback must be "used" before the static serving middleware!
+
+var cors = require('cors')
+
+app.use(cors()) // Use this after the variable declaration
 app.use(history({
     // OPTIONAL: Includes more verbose logging
     verbose: true
