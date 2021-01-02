@@ -18,13 +18,19 @@ var serveStatic = require('serve-static')
 
 
 var app = express()
-
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*');
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+  next();
+});
 // Use a fallback for non-root routes (required for Vue router)
 //   NOTE: History fallback must be "used" before the static serving middleware!
 
-var cors = require('cors')
+// var cors = require('cors')
 
-app.use(cors()) // Use this after the variable declaration
+// app.use(cors()) // Use this after the variable declaration
 app.use(history({
     // OPTIONAL: Includes more verbose logging
     verbose: true

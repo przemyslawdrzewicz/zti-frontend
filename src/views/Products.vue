@@ -139,7 +139,6 @@ export default {
         data: form,
         headers: {
           "Content-Type": `multipart/form-data; boundary=${form._boundary}`,
-          "Access-Control-Allow-Origin": process.env.VUE_APP_ROOT_API,
         },
       });
 
