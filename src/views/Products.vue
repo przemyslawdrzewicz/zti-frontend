@@ -2,6 +2,20 @@
   <div>
     <v-row justify="end" class="mr-1">
       <v-col cols="4">
+        <v-select
+          :items="[
+            { text: 'Rosnąco', value: 'asc' },
+            { text: 'Malejąco', value: 'desc' },
+          ]"
+          v-model="ascDesc"
+          clearable
+          item-text="text"
+          item-value="value"
+          @change="setSort()"
+          label="Sortowanie"
+        />
+      </v-col>
+      <v-col cols="4">
         <v-autocomplete
           :items="categories"
           v-model="category"
@@ -9,6 +23,7 @@
           item-text="name"
           item-value="id"
           @change="setCategory()"
+          label="Kategorie"
         />
       </v-col>
     </v-row>
@@ -30,7 +45,7 @@
               product.name
             }}</v-card-title>
             <div>
-              <span>{{ `Kategoria: ${product.category_id}` }}</span>
+              <span>{{ `Kategoria: ${product.category_name}` }}</span>
             </div>
 
             <div style="width: 100%" class="d-flex">
@@ -65,10 +80,11 @@ export default {
     return {
       products: [],
       count: 0,
-      limit: 10,
+      limit: 40,
       page: 1,
       category: null,
       categories: [],
+      ascDesc: "",
     };
   },
   async created() {
@@ -81,8 +97,8 @@ export default {
     // this.products = products?.data?.products || [];
     // this.count = products?.data?.count || 0;
     // console.log(products.data);
-    this.get();
-    this.getCategories();
+    await this.getCategories();
+    await this.get();
   },
   async mounted() {},
   computed: {
@@ -101,6 +117,10 @@ export default {
       );
       console.log(categories?.data, "categories?.data");
       this.categories = categories?.data || [];
+    },
+    setSort() {
+      this.page = 1;
+      this.get();
     },
     setCategory() {
       this.page = 1;
@@ -124,12 +144,16 @@ export default {
       //   });
       // }
     },
-    async get(page = this.page, perPage = this.limit) {
+    async get(page = this.page, perPage = this.limit, ascDesc = this.ascDesc) {
       const startAt = perPage * (page - 1);
 
       const form = new FormData();
       form.append("startAt", startAt);
       form.append("perPage", perPage);
+      if (ascDesc) {
+        form.append("orderBy", "price");
+        form.append("ascDesc", ascDesc);
+      }
 
       if (this.category) form.append("category", this.category);
 

@@ -16,6 +16,7 @@
               <v-text-field
                 :rules="rules"
                 label="Password"
+                type="password"
                 v-model="form.password"
               ></v-text-field>
               <div class="d-flex justify-center mt-2">
