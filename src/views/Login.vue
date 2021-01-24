@@ -24,6 +24,9 @@
                   >Zaloguj</v-btn
                 >
               </div>
+              <v-row justify="center" class="mt-4" v-if="error">
+                <v-alert color="error">Wystąpił błąd logowania</v-alert>
+              </v-row>
             </v-card>
           </v-form>
         </div>
@@ -43,11 +46,13 @@ export default {
         password: "",
       },
       rules: [(v) => !!v || "Field is required"],
+      error: false,
     };
   },
   methods: {
     ...mapActions(["setLogin", "setUser"]),
     async login(login, password) {
+      this.error = false;
       if (this.$refs.form.validate()) {
         const form = new FormData();
         form.append("login", login);
@@ -63,12 +68,15 @@ export default {
         });
         const user = response.data[0];
         console.log(user);
-        if (response && response.data && user) {
+        console.log(typeof user);
+
+        if (response && response.data && user && user !== "0") {
           this.setLogin(true);
           this.setUser(user);
           this.$router.push("/");
         } else {
           this.setLogin(false);
+          this.error = true;
         }
       }
     },

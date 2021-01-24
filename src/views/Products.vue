@@ -80,7 +80,7 @@ export default {
     return {
       products: [],
       count: 0,
-      limit: 40,
+      limit: 10,
       page: 1,
       category: null,
       categories: [],
@@ -130,19 +130,6 @@ export default {
       console.log(item, "hm");
 
       this.setCart(item);
-
-      // if (this.getCart?.length > 0) {
-      //   const [item] = this.getCart.filter((item) => item.id === id);
-      //   this.setCart({
-      //     id: id,
-      //     quantity: item.quantity + 1,
-      //   });
-      // } else {
-      //   this.setCart({
-      //     id: id,
-      //     quantity: 1,
-      //   });
-      // }
     },
     async get(page = this.page, perPage = this.limit, ascDesc = this.ascDesc) {
       const startAt = perPage * (page - 1);
@@ -165,6 +152,14 @@ export default {
           "Content-Type": `multipart/form-data; boundary=${form._boundary}`,
         },
       });
+
+      const prod = products?.data?.products || [];
+      if (prod?.length > 0) {
+        for (let p of prod) {
+          const find = this.categories.find((v) => v.id === p.category_id);
+          if (find?.name) p.category_name = find.name;
+        }
+      }
 
       this.products = products?.data?.products || [];
       this.count = products?.data?.count
